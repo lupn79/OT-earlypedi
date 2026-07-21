@@ -6,7 +6,14 @@
 <title>早期療育 職能治療評估報告 — 互動表單</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/docx@8.5.0/build/index.umd.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0" onerror="loadDocxFallback()"></script>
+<script>
+function loadDocxFallback(){
+  const s = document.createElement('script');
+  s.src = "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js";
+  document.head.appendChild(s);
+}
+</script>
 <style>
   :root{
     --bg:#FAF7F1; --card:#FFFFFF; --primary:#1F6F78; --primary-dark:#154D53;
