@@ -6,12 +6,34 @@
 <title>早期療育 職能治療評估報告 — 互動表單</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/docx@8.5.0" onerror="loadDocxFallback()"></script>
+<!-- docx 函式庫改在按下「匯出」時才載入，見下方 ensureDocxLoaded() -->
 <script>
-function loadDocxFallback(){
-  const s = document.createElement('script');
-  s.src = "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js";
-  document.head.appendChild(s);
+const DOCX_CDN_CANDIDATES = [
+  "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js",
+  "https://unpkg.com/docx@8.5.0/build/index.umd.min.js",
+  "https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js",
+  "https://unpkg.com/docx@8.5.0/build/index.umd.js"
+];
+
+function loadScriptTag_(src){
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("載入失敗：" + src));
+    document.head.appendChild(s);
+  });
+}
+
+async function ensureDocxLoaded(){
+  if(typeof docx !== "undefined") return true;
+  for(const url of DOCX_CDN_CANDIDATES){
+    try{
+      await loadScriptTag_(url);
+      if(typeof docx !== "undefined") return true;
+    }catch(e){ /* 換下一個來源再試 */ }
+  }
+  return typeof docx !== "undefined";
 }
 </script>
 <style>
@@ -94,7 +116,7 @@ function loadDocxFallback(){
   </div>
   <div class="export-bar">
     <button class="secondary" onclick="resetAll()">清空重填</button>
-    <button class="primary" onclick="exportWord()">匯出 Word 報告</button>
+    <button class="primary" onclick="exportWord(event)">匯出 Word 報告</button>
   </div>
 </div>
 
@@ -561,9 +583,13 @@ function updatePreview(){
 /* =========================================================
    匯出 Word（純瀏覽器端，不經過 Google Docs）
    ========================================================= */
-async function exportWord(){
-  if(typeof docx === "undefined"){
-    alert("Word 匯出功能尚未載入完成，請確認網路連線正常後重新整理頁面再試一次。");
+async function exportWord(evt){
+  const btn = evt && evt.target;
+  if(btn) { btn.disabled = true; btn.textContent = "載入中..."; }
+  const ok = await ensureDocxLoaded();
+  if(btn) { btn.disabled = false; btn.textContent = "匯出 Word 報告"; }
+  if(!ok){
+    alert("Word 匯出功能載入失敗，請確認網路連線後重新整理頁面再試一次。若持續失敗，可能是院內網路封鎖了外部 CDN，請告知資訊室開放 cdn.jsdelivr.net 與 unpkg.com。");
     return;
   }
   try{
