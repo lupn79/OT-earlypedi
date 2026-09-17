@@ -96,6 +96,14 @@
   .grasp-item-age{color:var(--accent); font-weight:600;}
   .grasp-item-desc{font-size:11.5px; color:var(--text-muted); margin:2px 0 4px;}
   .grasp-item-row select{font-size:12px; padding:5px 7px;}
+
+  .mabc-score-table{width:100%; border-collapse:collapse; margin-bottom:6px; font-size:12.5px;}
+  .mabc-score-table th{background:#EAF3F2; color:var(--primary-dark); padding:6px 8px; border:1px solid var(--border); font-size:12px; text-align:left;}
+  .mabc-score-table td{border:1px solid var(--border); padding:5px 8px; vertical-align:middle;}
+  .mabc-score-table td.mabc-std-cell{background:#F0EDE6; text-align:center;}
+  .mabc-score-table input{width:100%; border:none; background:transparent; padding:4px 2px; font-size:13px; text-align:center;}
+  .mabc-score-table td.mabc-std-cell input{font-weight:700; color:var(--primary-dark);}
+  .mabc-score-table input:focus{outline:1px solid var(--primary);}
   .grasp-item-row.entry-point-row{background:#FFF6EC; border-left:4px solid var(--accent); padding-left:8px; margin-left:-8px; border-radius:6px;}
   .entry-badge{display:inline-block; margin-left:8px; background:var(--accent); color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; vertical-align:middle;}
 
@@ -209,27 +217,45 @@
       <div id="mabcFineMotorBlock" style="display:none;">
         <div class="field"><label>年齡層（自動判斷）</label><input type="text" id="f_mabcAgeBandDisplay" disabled style="background:#F0EDE6;"></div>
 
-        <div class="subsection-title">MD1 拿硬幣（Posting Coins）</div>
-        <div class="row-2">
-          <div class="field"><label>慣用手（秒數，取2次較快者）</label><input type="text" id="f_mabcPostingPref" oninput="onFieldInput(); updateMabcMd();"></div>
-          <div class="field"><label>非慣用手（秒數，取2次較快者）</label><input type="text" id="f_mabcPostingNonpref" oninput="onFieldInput(); updateMabcMd();"></div>
-        </div>
-        <div class="field"><label>MD1 標準分數（自動查表+雙手平均）</label><input type="text" id="f_mabcMd1Display" disabled style="background:#F0EDE6;"></div>
+        <div class="subsection-title">Item Scores and Equivalent Standard Scores</div>
+        <table class="mabc-score-table">
+          <tr><th>Item code</th><th>Name of item</th><th>Raw score<br>(best attempt)</th><th>Item Standard<br>Score</th></tr>
+          <tr>
+            <td rowspan="2">MD 1*</td>
+            <td>Posting Coins<br>preferred hand</td>
+            <td><input type="text" id="f_mabcPostingPref" oninput="onFieldInput(); updateMabcMd();"></td>
+            <td rowspan="2" class="mabc-std-cell"><input type="text" id="f_mabcMd1Display" disabled></td>
+          </tr>
+          <tr>
+            <td>Posting Coins<br>non-pref hand</td>
+            <td><input type="text" id="f_mabcPostingNonpref" oninput="onFieldInput(); updateMabcMd();"></td>
+          </tr>
+          <tr>
+            <td>MD 2</td>
+            <td>Threading Beads</td>
+            <td><input type="text" id="f_mabcThreadingBeads" oninput="onFieldInput(); updateMabcMd();"></td>
+            <td class="mabc-std-cell"><input type="text" id="f_mabcMd2Display" disabled></td>
+          </tr>
+          <tr>
+            <td>MD 3</td>
+            <td>Drawing Trail 1</td>
+            <td><input type="text" id="f_mabcDrawingTrail" oninput="onFieldInput(); updateMabcMd();"></td>
+            <td class="mabc-std-cell"><input type="text" id="f_mabcMd3Display" disabled></td>
+          </tr>
+        </table>
+        <div class="field-hint" style="margin:6px 0 14px;">*Posting Coins：兩手標準分數相加除以2，大於10無條件進位，小於10無條件捨去</div>
 
-        <div class="subsection-title">MD2 穿珠子（Threading Beads）</div>
-        <div class="field"><label>原始分數</label><input type="text" id="f_mabcThreadingBeads" oninput="onFieldInput(); updateMabcMd();"></div>
-        <div class="field"><label>MD2 標準分數（自動查表）</label><input type="text" id="f_mabcMd2Display" disabled style="background:#F0EDE6;"></div>
+        <div class="subsection-title">Manual Dexterity（MD1+MD2+MD3）</div>
+        <table class="mabc-score-table">
+          <tr><th>Component score</th><th>Standard Score</th><th>Percentile</th></tr>
+          <tr>
+            <td class="mabc-std-cell"><input type="text" id="f_mabcMdSumDisplay" disabled></td>
+            <td class="mabc-std-cell"><input type="text" id="f_mabcMdStdDisplay" disabled></td>
+            <td class="mabc-std-cell"><input type="text" id="f_mabcMdPercentileDisplay" disabled></td>
+          </tr>
+        </table>
 
-        <div class="subsection-title">MD3 畫線測驗（Drawing Trail 1，錯誤數）</div>
-        <div class="field"><label>原始分數（錯誤數）</label><input type="text" id="f_mabcDrawingTrail" oninput="onFieldInput(); updateMabcMd();"></div>
-        <div class="field"><label>MD3 標準分數（自動查表）</label><input type="text" id="f_mabcMd3Display" disabled style="background:#F0EDE6;"></div>
-
-        <div class="row-2" style="margin-top:8px;">
-          <div class="field"><label>Manual Dexterity 標準分數總和（自動）</label><input type="text" id="f_mabcMdSumDisplay" disabled style="background:#F0EDE6;"></div>
-          <div class="field"><label>百分位數（自動查表）</label><input type="text" id="f_mabcMdPercentileDisplay" disabled style="background:#F0EDE6;"></div>
-        </div>
-
-        <div class="field" style="margin-top:8px;"><label>整體精細動作百分比（若另有整體施測結果，選填）</label><input type="text" id="f_mabcOverallPercentage" oninput="onFieldInput()"></div>
+        <div class="field" style="margin-top:14px;"><label>整體精細動作百分比（若另有整體施測結果，選填）</label><input type="text" id="f_mabcOverallPercentage" oninput="onFieldInput()"></div>
         <div class="field"><label>手部靈活度</label><textarea id="f_mabcHandDexterity" oninput="onFieldInput()"></textarea></div>
         <div class="field"><label>雙手協調表現</label><textarea id="f_mabcBilateralCoordination" oninput="onFieldInput()"></textarea></div>
         <div class="field"><label>工具操作表現</label><textarea id="f_mabcToolManipulation" oninput="onFieldInput()"></textarea></div>
@@ -519,10 +545,11 @@ function updateMabcMd(){
   const md2El = document.getElementById("f_mabcMd2Display");
   const md3El = document.getElementById("f_mabcMd3Display");
   const sumEl = document.getElementById("f_mabcMdSumDisplay");
+  const stdEl = document.getElementById("f_mabcMdStdDisplay");
   const pctEl = document.getElementById("f_mabcMdPercentileDisplay");
 
   if(!band){
-    [md1El,md2El,md3El,sumEl,pctEl].forEach(el=>{ if(el) el.value=""; });
+    [md1El,md2El,md3El,sumEl,stdEl,pctEl].forEach(el=>{ if(el) el.value=""; });
     return;
   }
 
@@ -545,9 +572,11 @@ function updateMabcMd(){
     const sum = md1+md2+md3;
     sumEl.value = sum;
     const pctRow = mabcLookupPercentile(sum);
-    pctEl.value = pctRow ? `標準分數${pctRow.std}／百分位${pctRow.pct}` : "⚠超出對照表範圍";
+    stdEl.value = pctRow ? pctRow.std : "⚠超出對照表範圍";
+    pctEl.value = pctRow ? pctRow.pct : "⚠超出對照表範圍";
   } else {
     sumEl.value = "";
+    stdEl.value = "";
     pctEl.value = "";
   }
 }
@@ -1162,7 +1191,7 @@ function fineMotorContent(){
     s += `MD1 拿硬幣：慣用手 ${g("mabcPostingPref")||"　"}秒／非慣用手 ${g("mabcPostingNonpref")||"　"}秒／標準分數 ${g("mabcMd1Display")||"　"}\n`;
     s += `MD2 穿珠子：原始分數 ${g("mabcThreadingBeads")||"　"}／標準分數 ${g("mabcMd2Display")||"　"}\n`;
     s += `MD3 畫線測驗：錯誤數 ${g("mabcDrawingTrail")||"　"}／標準分數 ${g("mabcMd3Display")||"　"}\n`;
-    s += `Manual Dexterity 標準分數總和：${g("mabcMdSumDisplay")||"　"}／${g("mabcMdPercentileDisplay")||"（百分位數尚未計算）"}\n`;
+    s += `Manual Dexterity：Component score ${g("mabcMdSumDisplay")||"　"}／Standard Score ${g("mabcMdStdDisplay")||"　"}／Percentile ${g("mabcMdPercentileDisplay")||"　"}\n`;
     if(g("mabcOverallPercentage")) s += `整體精細動作百分比：${g("mabcOverallPercentage")}%\n`;
     s += `手部靈活度：${g("mabcHandDexterity")||"　"}\n`;
     s += `雙手協調表現：${g("mabcBilateralCoordination")||"　"}\n`;
