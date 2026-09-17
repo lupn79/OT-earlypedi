@@ -659,7 +659,6 @@ function highlightEntryItem(containerId, entryNo){
       badge.textContent = "★ 建議由此開始施測";
       head.appendChild(badge);
     }
-    targetRow.scrollIntoView({behavior:"smooth", block:"center"});
   }
 }
 
@@ -828,7 +827,7 @@ const CHOICE_GROUPS = {
   fineMotorTrainingNeed:{multi:false, options:["不需要","需要追蹤及諮詢","需要訓練"]},
   fineMotorGoals:{multi:true, options:["發展慣用手","發展抓握、拈取及釋放等基本手功能","提升手部肌力、肌耐力","增進雙手使用能力/協調性","提升力量調節及動作速度之控制","提升手部操作各種工具之技巧(包括剪刀、筆、膠水等之使用)","提升手眼協調"]},
 
-  siResult:{multi:false, options:["無異常","疑似失調","失調"]},
+  siResult:{multi:false, options:["無異常","疑似失調","失調","未評估此項目"]},
   siTools:{multi:true, options:["臨床觀察","臨床晤談","感覺統合臨床評量(SICO)","其他"]},
   siRegulation:{multi:true, options:["重力不安全感","對動作有厭惡的反應","觸覺防禦","逃避感覺經驗","對味道過度反應","對聲音過度反應","分心-注意無關的刺激、難專注","活動量高"]},
   siPosture:{multi:true, options:["未完成俯臥伸直","近端穩定度不佳","低肌肉張力","平衡調節能力不佳"]},
