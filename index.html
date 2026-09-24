@@ -1177,7 +1177,7 @@ function applyCaseData(v){
 function g(f){ const el=document.getElementById("f_"+f); return (state[f]!==undefined?state[f]:(el?el.value:"")) || ""; }
 function cg(k){ const cfg=CHOICE_GROUPS[k]; if(!cfg) return ""; return cfg.multi ? (state[k]||[]).join("、") : (state[k]||""); }
 
-function fineMotorContent(){
+function fineMotorContent(forExport){
   let s = `評估結果：${cg("fineMotorResult")||"　"}\n評估工具：${cg("fineMotorTools")||"　"}\n肌肉張力異常：${cg("muscleTone")||"　"}${state.muscleTone==="異常"?"（部位："+g("muscleTonePart")+"）":""}\n`;
   if(currentTool==="pdms"){
     const { sum, answered } = computeGraspRawScore();
@@ -1188,12 +1188,17 @@ function fineMotorContent(){
     s += `抓握能力：${buildGraspContent()}${g("graspNote")?"　"+g("graspNote"):""}\n`;
     s += `視動整合能力：${buildVmiContent()}${g("vmiNote")?"　"+g("vmiNote"):""}\n`;
   } else {
-    s += `年齡層：${g("mabcAgeBandDisplay")||"　"}\n`;
-    s += `MD1 拿硬幣：慣用手 ${g("mabcPostingPref")||"　"}秒／非慣用手 ${g("mabcPostingNonpref")||"　"}秒／標準分數 ${g("mabcMd1Display")||"　"}\n`;
-    s += `MD2 穿珠子：原始分數 ${g("mabcThreadingBeads")||"　"}／標準分數 ${g("mabcMd2Display")||"　"}\n`;
-    s += `MD3 畫線測驗：錯誤數 ${g("mabcDrawingTrail")||"　"}／標準分數 ${g("mabcMd3Display")||"　"}\n`;
-    s += `Manual Dexterity：Component score ${g("mabcMdSumDisplay")||"　"}／Standard Score ${g("mabcMdStdDisplay")||"　"}／Percentile ${g("mabcMdPercentileDisplay")||"　"}\n`;
-    if(g("mabcOverallPercentage")) s += `整體精細動作百分比：${g("mabcOverallPercentage")}%\n`;
+    if(forExport){
+      const pct = g("mabcOverallPercentage") || g("mabcMdPercentileDisplay") || "　";
+      s += `整體精細動作百分比：${pct}${pct!=="　"?"%":""}\n`;
+    } else {
+      s += `年齡層：${g("mabcAgeBandDisplay")||"　"}\n`;
+      s += `MD1 拿硬幣：慣用手 ${g("mabcPostingPref")||"　"}秒／非慣用手 ${g("mabcPostingNonpref")||"　"}秒／標準分數 ${g("mabcMd1Display")||"　"}\n`;
+      s += `MD2 穿珠子：原始分數 ${g("mabcThreadingBeads")||"　"}／標準分數 ${g("mabcMd2Display")||"　"}\n`;
+      s += `MD3 畫線測驗：錯誤數 ${g("mabcDrawingTrail")||"　"}／標準分數 ${g("mabcMd3Display")||"　"}\n`;
+      s += `Manual Dexterity：Component score ${g("mabcMdSumDisplay")||"　"}／Standard Score ${g("mabcMdStdDisplay")||"　"}／Percentile ${g("mabcMdPercentileDisplay")||"　"}\n`;
+      if(g("mabcOverallPercentage")) s += `整體精細動作百分比：${g("mabcOverallPercentage")}%\n`;
+    }
     s += `手部靈活度：${g("mabcHandDexterity")||"　"}\n`;
     s += `雙手協調表現：${g("mabcBilateralCoordination")||"　"}\n`;
     s += `工具操作表現：${g("mabcToolManipulation")||"　"}\n`;
@@ -1241,9 +1246,9 @@ function playTrainingContent(){
   return `訓練需求：${cg("play_trainingNeed")||"　"}\n訓練方向：${cg("play_goals")||"　"}\n具體建議：${g("play_suggestion")||"　"}`;
 }
 
-function getReportRows(){
+function getReportRows(forExport){
   const rows = [];
-  rows.push(["知覺動作功能", `精細動作評估　${cg("fineMotorResult")||""}`, fineMotorContent()]);
+  rows.push(["知覺動作功能", `精細動作評估　${cg("fineMotorResult")||""}`, fineMotorContent(forExport)]);
   rows.push(["", "精細動作訓練", fineMotorTrainingContent()]);
   rows.push(["知覺動作功能", `感覺統合評估　${cg("siResult")||""}`, siContent()]);
   rows.push(["", "感覺統合訓練", siTrainingContent()]);
@@ -1313,7 +1318,7 @@ async function doExportWord_(){
     });
   }
 
-  const rows = getReportRows();
+  const rows = getReportRows(true);
   const tableRows = [
     new TableRow({tableHeader:true, children:[
       cell("類別", 1200, {bold:true}),
